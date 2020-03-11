@@ -14,7 +14,6 @@ if __name__ == '__main__':
     # Code here won't be run when you import the file.
 ```
 
-<br/>
 All the variables used in the function should be initialised in the function or passed as parameters
 
 Bad examples:
@@ -43,9 +42,8 @@ def get_list_of_a():
     
 ...
 # a is not referenced anymore and is only used in the function
-```
+```  
 
-<br/>
 Preferred way:
 ```
 # Eg. 1
@@ -77,7 +75,7 @@ a = [9,4,2,5]
 populated_list = populate_list(a, 3)
 print(populated_list) #[9,4,2,5, 0, 1, 2]
 ```
-<br/>
+
 Function names should be representative of what the function does
 ```
 # It is good to add get in front if you are retrieving data
@@ -105,7 +103,6 @@ a = b
 while a == b:
     a += b
 ```
-<br/>
 Math calculations and operations, leave a space only when needed to divide the expression
 ```
 a = 12*34**2 / 45*343
