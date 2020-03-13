@@ -2,6 +2,13 @@
 
 ---
 
+## Issues:
+
+- Why is there 2 of the same file? (DW_1D_Moisture_Code.ino and Moisture Sensor Arduino.ino)
+- Create another table, storing the plant_id and pot_no to replace the dictionary in main.py, get_data()
+- Figure out a way to improve on the reliability of the sensors ([maybe implement the RPi sends a trigger to Arduino to measure sensors](https://www.sunfounder.com/blog/rpi-ard/))
+
+
 ## Good coding habits
 (info is mostly correct, tell me if it is inaccurate!)
 
@@ -16,7 +23,7 @@ Upload all your other code into this repo. Filename should represent the functio
 main.py would then import all the functions as from firebase import *
 
 Stuff that you don't want it to be run when you import the module (testing code etc.), please place it into this
-```
+``` python
 if __name__ == '__main__':
     # Code here won't be run when you import the file.
 ```
@@ -24,7 +31,7 @@ if __name__ == '__main__':
 All the variables used in the function should be initialised in the function or passed as parameters
 
 Bad examples:
-```
+``` python
 # Eg. 1
 # plant is a variable that is used in other functions too
 # This confuses the reader on what variables does the function uses
@@ -52,7 +59,7 @@ def get_list_of_a():
 ```  
 
 Preferred way:
-```
+``` python
 # Eg. 1
 plant = 0
 
@@ -84,7 +91,7 @@ print(populated_list)  # [9,4,2,5, 0, 1, 2]
 ```
 
 Function names should be representative of what the function does
-```
+``` python
 # It is good to add get in front if you are retrieving data
 # Set when you setting data
 def get_moisture_level(plant):
@@ -100,7 +107,7 @@ def water_plant():
 ```
 
 Use snake_case instead of camelCase to differentiate works in naming variables and functions
-```
+``` python
 def hello_world():
     pass
 
@@ -118,7 +125,7 @@ listOfWords = helloWorld()
 ## Whitespaces
 
 Do leave spaces before and after = and ==
-```
+``` python
 a = b
 
 while a == b:
@@ -126,12 +133,12 @@ while a == b:
 ```
 
 Math calculations and operations, leave a space only when needed to divide the expression
-```
+``` python
 a = 12*34**2 / 45*343
 ```
 
 Always add spaces after commas to seperate elements
-```
+``` python
 a = [1, 2, 3]
 range(1, 4, 3)
 dd = {"hello": 123, "world": 435}  # Spaces after the colon and comma
@@ -146,7 +153,7 @@ func()  # Before () for functions
 Leave a line before and after a code block.
 Outer most functions are separated with 2 line breaks.
 Use 4 spaces for indentation rather than tabs
-```
+``` python
 def foo():
     a = 0
     b = 0
@@ -174,7 +181,7 @@ There should be a spacing after every hashtag
 First letter should be captialised
 For inline comments, add 2 spaces before the hastag
 Use inline comments sparingly
-```
+``` python
 # This is the proper way
 
 # don't do this unless the first word is a variable or something (that has to be in small letters)
@@ -183,7 +190,7 @@ Use inline comments sparingly
 a = 0  # 2 spaces before inline hastags
 ```
 __Every__ function should be documented
-```
+``` python
 def foo():
     # Place documentation here
 
@@ -203,7 +210,7 @@ def bar():
 Use `"` for strings, `'` for single character strings, """ for multiline strings
 
 Return statements should always return something
-```
+``` python
 def foo(a):
     if a == True:
         return True
