@@ -39,34 +39,9 @@ replacing your command with      sudo reboot now         #this makes your rpi re
 crontab -l   <-- not sure if 1 or l                      #to view file without editing
 """
 
-'''
 
 def gettime():
     """ returns current time """
-    nowtime = datetime.datetime.now(tz)
-    return nowtime
-
-#nowtime = gettime().strftime('%d-%m-%Y %X')
-#currenthour = int(nowtime[11:13])
-#db.child("Init Time").child(0).child("init time").set(currenthour, user['idToken'])
-#db.child("Init Time").child(1).child("init time").set(currenthour, user['idToken'])
-#db.child("Init Time").child(2).child("init time").set(currenthour, user['idToken'])
-#db.child("Init Time").child(10).child("init time").set(currenthour, user['idToken'])
-
-a = db.child("Init Time").child(0).child("init time").get(user['idToken'])
-db.child("Init Time").child(1).child("init time").set(gettime().strftime('%d-%m-%Y %X'), user['idToken'])
-db.child("Init Time").child(2).child("init time").set(gettime().strftime('%d-%m-%Y %X'), user['idToken'])
-db.child("Init Time").child(10).child("init time").set(gettime().strftime('%d-%m-%Y %X'), user['idToken'])
-
-print(a)
-
-'''
-
-
-
-def gettime():
-    """ returns current time """
-
     nowtime = datetime.datetime.now(tz)
     return nowtime
 
@@ -99,7 +74,9 @@ def readMoisture(plant):
 
 #Define some constants from the datasheet
 
-DEVICE     = 0x23 # Default device I2C address
+# LDR(0) is for plants 0,1,2. LDR(1) is for plants 3,4,5
+LDR        = (0x23, 0x24) # LDR[0] = Default device I2C address, LDR[1] = set as per instructions below
+LDR[1] is a false value With the device connected and the Pi powered up the “i2cdetect” command should show the device with address 0x23. (do the same to get the other address)
 
 POWER_DOWN = 0x00 # No active state
 POWER_ON   = 0x01 # Power on
@@ -125,23 +102,31 @@ ONE_TIME_LOW_RES_MODE = 0x23
 bus = smbus.SMBus(1)  # Rev 2 Pi uses 1
 
 def convertToNumber(data):
-  # Simple function to convert 2 bytes of data
-  # into a decimal number. Optional parameter 'decimals'
-  # will round to specified number of decimal places.
+  """ Simple function to convert 2 bytes of data
+  into a decimal number. Optional parameter 'decimals'
+  will round to specified number of decimal places.
+  """
   result=(data[1] + (256 * data[0])) / 1.2
   return (result)
 
-def readLight(addr=DEVICE):
+def readLight(addr=LDR1):
   """Reads light value for each plant"""
   
-  #Read data from I2C interface
+  # Read data from I2C interface
   data = bus.read_i2c_block_data(addr,ONE_TIME_HIGH_RES_MODE_1)
   return convertToNumber(data)
 
 def getdata(plant):
-    """ return {"light" : 123, "moisture" : 321}   picture is in rpi camera code """
+    """ return {"light" : 123, "moisture" : 321}
+    picture is in rpi camera code
+    """
 
-    data = {"light" : readLight(DEVICE), "moisture" : readMoisture(plant)}
+    if plant == 0 or plant == 1 or plant == 2 or:
+    	ldr = LDR[0]
+    else:
+    	ldr = LDR[1]
+
+    data = {"light" : readLight(ldr), "moisture" : readMoisture(plant)}
     return data
 
 def senddata(data, plant, day, hourcount):
@@ -156,61 +141,18 @@ def getallplantls():
     plantdic = db.child("Names").get(user['idToken']).val()
     return plantdic
 
-#data = {"light" : 12345, "moisture" : 654321}            #getdata()            #data is a dictionary
 
 
-allplantls = getallplantls()
-for plant in allplantls:
-    day = getday(plant)
-    hourcount = gethour(plant)
-    data = getdata(plant)
-    senddata(data, plant, day, hourcount)
-    #if hourcount == 0:
-    #    camera()
-    #    average()
+if __name__ = "__main__":
+	# Main function
+	allplantls = getallplantls()
+	for plant in allplantls:
+	    day = getday(plant)
+	    hourcount = gethour(plant)
+	    data = getdata(plant)
+	    senddata(data, plant, day, hourcount)
+	    #if hourcount == 0:
+	    #    camera()
+	    #    average()
 
 
-
-'''
-
-
-
-
-
-def main():
-
-  while True:
-    lightLevel=readLight()
-    print("Light Level : " + format(lightLevel,'.2f') + " lx")
-    time.sleep(0.5)
-
-if __name__=="__main__":
-   main()
-
-'''
-
-
-'''
-    if hourcount == 24:
-        hourcount = 0
-    
-    if getday(init_time) == day:
-        senddata(data, plant, day, hourcount)
-        hourcount += 1
-    else:
-        day += 1
-        senddata(data, plant, day, hourcount)
-        hourcount += 1
-'''
-
-
-#dd = {"light" : 123, "moisture" : 321, "camera" : "picture"}
-#db.child("Plant-e").child(0).child("day 0").child(0).set(dd, user['idToken'])
-
-
-"""    
-    init_time_str = datetime.datetime.now(tz).strftime('%d-%m-%Y %X')  # convert to string to store in database
-    db.child("InitTime").set(init_time_str, user['idToken'])  # store string in database under "initTime"
-    init_time = datetime.datetime.strptime(init_time_str + ' UTC+0800', '%d-%m-%Y %X %Z%z')  # convert string to datetime object
-    
-"""
