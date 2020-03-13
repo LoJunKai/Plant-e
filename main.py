@@ -5,10 +5,16 @@ import datetime
 tz = datetime.timezone(datetime.timedelta(hours=8)) # can add name='SGT' to change %Z from UTC+0800 to SGT
 import serial
 import smbus
+import base64
+from picamera import PiCamera
+import time
+
+camera = PiCamera()
 
 projectid = "plant-e"
 dburl = "https://" + projectid + ".firebaseio.com"
 authdomain = projectid + ".firebaseio.com"
+
 apikey = "AIzaSyDJxaq0uT1JpIkftOgjoldVIy7mT9KG844"
 email = "plant-e@dw.com"
 password = "afordw"
@@ -31,7 +37,6 @@ db = firebase.database()
 root = db.child("/").get(user['idToken'])
 
 
-
 """
 crontab -e                                               #select editor
 0 * * * * python3 /home/pi/<insertfilename>              # min  hour  day_of_month  month  day_of_week  command
@@ -42,6 +47,7 @@ crontab -l   <-- not sure if 1 or l                      #to view file without e
 
 def gettime():
     """ returns current time """
+
     nowtime = datetime.datetime.now(tz)
     return nowtime
 
@@ -66,17 +72,18 @@ def gethour(plant):
 
 def readMoisture(plant):
     """ returns moisture level for each plant """
-
+    print("reading moisture...")
     ser = serial.Serial("/dev/ttyACM0", 9600)  # change ACM number as found from ls /dev/tty/ACM*
     ser.baudrate = 9600
-    moisture = ser.readline()[:-1]
-    return int(moisture)
+    moisture = ser.readline()[:-1]   
+    moisturels = list(map(ord, moisture.split()))
+    print(moisturels)
+    moisture = moisturels[plant]
+    return moisture
 
 #Define some constants from the datasheet
 
-# LDR(0) is for plants 0,1,2. LDR(1) is for plants 3,4,5
-LDR        = (0x23, 0x24) # LDR[0] = Default device I2C address, LDR[1] = set as per instructions below
-LDR[1] is a false value With the device connected and the Pi powered up the “i2cdetect” command should show the device with address 0x23. (do the same to get the other address)
+LDR        = (0x23, 0x5c) # LDR[0] = Default device I2C address, LDR[1] = set as per instructions below
 
 POWER_DOWN = 0x00 # No active state
 POWER_ON   = 0x01 # Power on
@@ -102,26 +109,28 @@ ONE_TIME_LOW_RES_MODE = 0x23
 bus = smbus.SMBus(1)  # Rev 2 Pi uses 1
 
 def convertToNumber(data):
-  """ Simple function to convert 2 bytes of data
-  into a decimal number. Optional parameter 'decimals'
-  will round to specified number of decimal places.
-  """
+  # Simple function to convert 2 bytes of data
+  # into a decimal number. Optional parameter 'decimals'
+  # will round to specified number of decimal places.
   result=(data[1] + (256 * data[0])) / 1.2
   return (result)
 
-def readLight(addr=LDR1):
+def readLight(addr=LDR[1]):
   """Reads light value for each plant"""
-  
-  # Read data from I2C interface
+
+  #Read data from I2C interface
   data = bus.read_i2c_block_data(addr,ONE_TIME_HIGH_RES_MODE_1)
   return convertToNumber(data)
 
 def getdata(plant):
-    """ return {"light" : 123, "moisture" : 321}
-    picture is in rpi camera code
-    """
+    """ return {"light" : 123, "moisture" : 321} picture is in rpi camera code """
 
-    if plant == 0 or plant == 1 or plant == 2 or:
+    index = {100:0, 101:1, 102:2, 104:3, 110:4, 111:5}
+
+    plant = index[plant]
+    print(plant)
+    
+    if plant == 0 or plant == 1 or plant == 2:
     	ldr = LDR[0]
     else:
     	ldr = LDR[1]
@@ -139,20 +148,59 @@ def getallplantls():
     """ returns ordered dictionary of keys and values under Names """
 
     plantdic = db.child("Names").get(user['idToken']).val()
+    print(plantdic)
     return plantdic
 
+def takepic(day):
+    camera.start_preview()
+    camera.capture('/home/pi/Desktop/day{}.jpg'.format(day))
+    camera.stop_preview()
+    with open("day{}.jpg".format(day), "rb") as imageFile:
+        imgbytes = base64.b64encode(imageFile.read())
+        imgstr = imgbytes.decode('utf-8')
+        db.child("Camera").child("day " + str(day)).set(imgstr, user['idToken'])
+    return
+
+allplantls = getallplantls()
+for plant in allplantls:
+    if plant == None:
+        continue
+    plant = int(plant)
+    day = getday(plant)
+    hourcount = gethour(plant)
+    data = getdata(plant)
+    senddata(data, plant, day, hourcount)
+    if hourcount == 1:
+        takepic(day)
+    #    average()
+
+'''
+
+'''
 
 
-if __name__ = "__main__":
-	# Main function
-	allplantls = getallplantls()
-	for plant in allplantls:
-	    day = getday(plant)
-	    hourcount = gethour(plant)
-	    data = getdata(plant)
-	    senddata(data, plant, day, hourcount)
-	    #if hourcount == 0:
-	    #    camera()
-	    #    average()
+
+'''
+    if hourcount == 24:
+        hourcount = 0
+    
+    if getday(init_time) == day:
+        senddata(data, plant, day, hourcount)
+        hourcount += 1
+    else:
+        day += 1
+        senddata(data, plant, day, hourcount)
+        hourcount += 1
+'''
 
 
+#dd = {"light" : 123, "moisture" : 321, "camera" : "picture"}
+#db.child("Plant-e").child(0).child("day 0").child(0).set(dd, user['idToken'])
+
+
+"""    
+    init_time_str = datetime.datetime.now(tz).strftime('%d-%m-%Y %X')  # convert to string to store in database
+    db.child("InitTime").set(init_time_str, user['idToken'])  # store string in database under "initTime"
+    init_time = datetime.datetime.strptime(init_time_str + ' UTC+0800', '%d-%m-%Y %X %Z%z')  # convert string to datetime object
+    
+"""
