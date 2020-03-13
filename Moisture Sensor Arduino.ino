@@ -1,10 +1,4 @@
 #include <stdio.h>
-//#define SensorPin0 A0 
-//#define SensorPin1 A1 
-//#define SensorPin2 A2 
-//#define SensorPin3 A3 
-//#define SensorPin4 A4 
-//#define SensorPin5 A5 
 float sensorValue = 0; 
 
 int dry = 1040;
@@ -34,6 +28,15 @@ void loop() {
     
     }
 
- Serial.println((char) averages);
+ char printstr[11] = {};
+ for (int i = 0; i<12; i++){
+  if (i%2 == 0){
+    printstr[i] = (char) averages[i/2];
+  } else {
+    printstr[i] = ' ';
+  }
+ }
  
-} 
+ Serial.println(printstr);
+ 
+}
