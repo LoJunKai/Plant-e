@@ -1,8 +1,8 @@
 #include <stdio.h>
 float sensorValue = 0; 
 
-int dry = 1040;
-int wet = 400; //prevly 30
+int dry = 500;
+int wet = 0; //prevly 30
 int moisture = 0;
 
 int sensors[6] = {A0, A1, A2, A3, A4, A5};
