@@ -8,7 +8,7 @@ int moisture;
 int sensors[6] = {A0, A1, A2, A3, A4, A5};
 
 void setup() { 
- Serial.begin(9600);
+  Serial.begin(9600);
 } 
 
 void loop() { 
@@ -25,6 +25,15 @@ void loop() {
     sensorValue = sensorValue/100.0;
     
     moisture = ((dry - sensorValue)/(dry - wet)) * 100;
+    if (moisture > 100)
+    {
+      moisture = 100;
+    } 
+    else if (moisture < 0);
+    {
+      moisture = 0;
+    }
+    
     Serial.println( (char) moisture);
   }
 }
