@@ -34,8 +34,6 @@ ONE_TIME_LOW_RES_MODE = 0x23
 #bus = smbus.SMBus(0) # Rev 1 Pi uses 0
 bus = smbus.SMBus(1)  # Rev 2 Pi uses 1
 
-camera = PiCamera()
-
 projectid = "plant-e"
 dburl = "https://" + projectid + ".firebaseio.com"
 authdomain = projectid + ".firebaseio.com"
@@ -155,6 +153,7 @@ def getallplantls():
     return plantdic
 
 def takepic(day):
+    camera = PiCamera()
     camera.start_preview()
     camera.capture('/home/pi/Desktop/day{}.jpg'.format(day))
     camera.stop_preview()
