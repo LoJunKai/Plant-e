@@ -5,7 +5,8 @@
 ## Issues:
 
 - Create another table, storing the plant_id and pot_no to replace the dictionary in main.py, get_data()
-- When calling readMoisture(), Arduino will sometimes print b'\n' instead of b'{moisture}\n' back to the RPi
+- When calling readMoisture(), Arduino will sometimes print b'\n' instead of b'{moisture}\n' back to the RPi - Could be because the Serial does not get the value from Arduino in time, so the '\n' is received
+- When opening Serial in readMoisture(), place it inside a context manager (with... ) so that the connection closes properly
 
 
 ## Good coding habits
