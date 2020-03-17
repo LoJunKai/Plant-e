@@ -29,7 +29,7 @@ void loop() {
     }
 
  char printstr[11] = {};
- for (int i = 0; i<12; i++){
+ for (int i = 0; i<11; i++){
   if (i%2 == 0){
     printstr[i] = (char) averages[i/2];
   } else {
