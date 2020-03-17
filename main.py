@@ -93,23 +93,6 @@ def gethour(plant):
     hour = db.child("Init Time").child(plant).child("hour").get(user['idToken']).val()
     return hour
 
-def readMoisture(plant):
-    """ returns moisture level for each plant """
-    moisture = None
-    ser = serial.Serial("/dev/ttyACM0", 9600)  # change ACM number as found from ls /dev/tty/ACM*
-    ser.baudrate = 9600
-
-    for _ in range(20):
-        ser.write(b'%d'%plant)
-        ser.flush()
-        if ser.in_waiting > 0:
-            val = ser.readline()
-            moisture = ord(val[:-2])
-            break
-        time.sleep(1)
-
-    return moisture
-
 def convertToNumber(data):
   # Simple function to convert 2 bytes of data
   # into a decimal number. Optional parameter 'decimals'
@@ -123,6 +106,25 @@ def readLight(addr=LDR[0]):
   #Read data from I2C interface
   data = bus.read_i2c_block_data(addr,ONE_TIME_HIGH_RES_MODE_1)
   return convertToNumber(data)
+
+def readMoisture(plant):
+    """ returns moisture level for each plant """
+    moisture = None
+    ser = serial.Serial("/dev/ttyACM0", 9600)  # change ACM number as found from ls /dev/tty/ACM*
+    ser.baudrate = 9600
+
+    for _ in range(20):
+        ser.write(b'%d'%plant)
+        ser.flush()
+        if ser.in_waiting > 0:
+            val = ser.readline()
+            val = val.replace(b'\r', b'')
+            val = val.replace(b'\n', b'')
+            moisture = ord(val)
+            break
+        time.sleep(1)
+
+    return moisture
 
 LDR = (0x23, 0x5c) # LDR[0] = Default device I2C address, LDR[1] = set as per instructions below
 def getdata(plant):
