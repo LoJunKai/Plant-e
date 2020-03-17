@@ -1,5 +1,4 @@
 #import RPi.GPIO as GPIO
-#from time import sleep
 import pyrebase
 import datetime
 tz = datetime.timezone(datetime.timedelta(hours=8)) # can add name='SGT' to change %Z from UTC+0800 to SGT
@@ -8,6 +7,33 @@ import smbus
 import base64
 from picamera import PiCamera
 import time
+
+"""---------------PLEASE DELETE THOSE THAT WE ARE NOT USING!!----------------"""
+
+#Define some constants from the datasheet
+LDR        = (0x23, 0x5c) # LDR[0] = Default device I2C address, LDR[1] = set as per instructions below
+POWER_DOWN = 0x00 # No active state
+POWER_ON   = 0x01 # Power on
+RESET      = 0x07 # Reset data register value
+
+# Start measurement at 4lx resolution. Time typically 16ms.
+CONTINUOUS_LOW_RES_MODE = 0x13
+# Start measurement at 1lx resolution. Time typically 120ms
+CONTINUOUS_HIGH_RES_MODE_1 = 0x10
+# Start measurement at 0.5lx resolution. Time typically 120ms
+CONTINUOUS_HIGH_RES_MODE_2 = 0x11
+# Start measurement at 1lx resolution. Time typically 120ms
+# Device is automatically set to Power Down after measurement.
+ONE_TIME_HIGH_RES_MODE_1 = 0x20
+# Start measurement at 0.5lx resolution. Time typically 120ms
+# Device is automatically set to Power Down after measurement.
+ONE_TIME_HIGH_RES_MODE_2 = 0x21
+# Start measurement at 1lx resolution. Time typically 120ms
+# Device is automatically set to Power Down after measurement.
+ONE_TIME_LOW_RES_MODE = 0x23
+
+#bus = smbus.SMBus(0) # Rev 1 Pi uses 0
+bus = smbus.SMBus(1)  # Rev 2 Pi uses 1
 
 camera = PiCamera()
 
@@ -72,41 +98,20 @@ def gethour(plant):
 
 def readMoisture(plant):
     """ returns moisture level for each plant """
-    print("reading moisture...")
+    moisture = None
     ser = serial.Serial("/dev/ttyACM0", 9600)  # change ACM number as found from ls /dev/tty/ACM*
     ser.baudrate = 9600
-    moisture = ser.readline()[:-1]   
-    moisturels = list(map(ord, moisture.split()))
-    print(moisturels)
-    moisture = moisturels[plant]
+
+    for _ in range(20):
+        ser.write(b'%d'%plant)
+        ser.flush()
+        if ser.in_waiting > 0:
+            val = ser.readline()
+            moisture = ord(val[:-2])
+            break
+        time.sleep(1)
+
     return moisture
-
-#Define some constants from the datasheet
-
-LDR        = (0x23, 0x5c) # LDR[0] = Default device I2C address, LDR[1] = set as per instructions below
-
-POWER_DOWN = 0x00 # No active state
-POWER_ON   = 0x01 # Power on
-RESET      = 0x07 # Reset data register value
-
-# Start measurement at 4lx resolution. Time typically 16ms.
-CONTINUOUS_LOW_RES_MODE = 0x13
-# Start measurement at 1lx resolution. Time typically 120ms
-CONTINUOUS_HIGH_RES_MODE_1 = 0x10
-# Start measurement at 0.5lx resolution. Time typically 120ms
-CONTINUOUS_HIGH_RES_MODE_2 = 0x11
-# Start measurement at 1lx resolution. Time typically 120ms
-# Device is automatically set to Power Down after measurement.
-ONE_TIME_HIGH_RES_MODE_1 = 0x20
-# Start measurement at 0.5lx resolution. Time typically 120ms
-# Device is automatically set to Power Down after measurement.
-ONE_TIME_HIGH_RES_MODE_2 = 0x21
-# Start measurement at 1lx resolution. Time typically 120ms
-# Device is automatically set to Power Down after measurement.
-ONE_TIME_LOW_RES_MODE = 0x23
-
-#bus = smbus.SMBus(0) # Rev 1 Pi uses 0
-bus = smbus.SMBus(1)  # Rev 2 Pi uses 1
 
 def convertToNumber(data):
   # Simple function to convert 2 bytes of data
@@ -161,6 +166,62 @@ def takepic(day):
         db.child("Camera").child("day " + str(day)).set(imgstr, user['idToken'])
     return
 
+
+# Call this function at the start of every new day to input the 3 days ave for that day
+def cal_ave3(db, plant, current_date):
+    # current_date is the date to be populated (just reach day 4, current_date == 'day 4')
+    if int(current_date[-1]) < 3:
+        print("current_date not above 3")
+        return None
+
+    # returns the last 3 days of the data_dict
+    def last_3_days(date_dict, current_date):
+        # returns {'day 0':[list of dicts...], 'day 1':[...], 'day 2':[...]}
+        date = []
+        for i in range(3):
+            date.append(current_date[:-1] + str(int(current_date[-1]) - i - 1))
+        date = date[::-1]
+
+        date_3 = {}
+        for i in range(len(date)):
+            date_3["day " + str(i)] = date_dict[date[i]]
+
+        return date_3
+
+    def average(date_3):
+        light = 0
+        moisture = 0
+        counter = 0
+        for list_of_dicts in date_3.values():
+            # list_of_dicts --> [{'light': 123, 'moisture': 321}, None, {'light': 234, 'moisture': 542}]
+            # if there is only 1 dict stored, list_of_dicts --> {'<index>': {'light': 847, 'moisture': 274}}
+            for dicts in list_of_dicts:
+                # Skip missing data
+                if dicts == None:
+                    continue
+                # Account when there is only 1 dict stored
+                if type(dicts) == str:
+                    dicts = list_of_dicts[dicts] # assigns dicts with {'light': 847, 'moisture': 274}
+                light += dicts["light"]
+                moisture += dicts["moisture"]
+                counter += 1
+
+        return int(light/counter), int(moisture/counter)
+
+
+    # Get plant data from firebase
+    date_dict = db.child("Plant-e").child(plant).get(user['idToken']).val()
+    # date_dict.val() --> OrderedDict([('day 0', [{'light': 123, 'moisture': 321}, {'light': 837, 'moisture': 658}, {'light': 234, 'moisture': 542}]), ('day 1', [None, {'light': 342, 'moisture': 632}])])
+
+    date_3 = last_3_days(date_dict, current_date)
+    light, moisture = average(date_3)
+
+    # Populate Ave3 node
+    dd = {"light":light, "moisture":moisture}
+    db.child("Ave3").child(plant).child(current_date).set(dd, user['idToken'])
+
+    return None
+
 allplantls = getallplantls()
 for plant in allplantls:
     if plant == None:
@@ -172,35 +233,4 @@ for plant in allplantls:
     senddata(data, plant, day, hourcount)
     if hourcount == 1:
         takepic(day)
-    #    average()
-
-'''
-
-'''
-
-
-
-'''
-    if hourcount == 24:
-        hourcount = 0
-    
-    if getday(init_time) == day:
-        senddata(data, plant, day, hourcount)
-        hourcount += 1
-    else:
-        day += 1
-        senddata(data, plant, day, hourcount)
-        hourcount += 1
-'''
-
-
-#dd = {"light" : 123, "moisture" : 321, "camera" : "picture"}
-#db.child("Plant-e").child(0).child("day 0").child(0).set(dd, user['idToken'])
-
-
-"""    
-    init_time_str = datetime.datetime.now(tz).strftime('%d-%m-%Y %X')  # convert to string to store in database
-    db.child("InitTime").set(init_time_str, user['idToken'])  # store string in database under "initTime"
-    init_time = datetime.datetime.strptime(init_time_str + ' UTC+0800', '%d-%m-%Y %X %Z%z')  # convert string to datetime object
-    
-"""
+        cal_ave3(db, plant, "day " + str(day))
