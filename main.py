@@ -120,6 +120,8 @@ def readMoisture(plant):
             val = ser.readline()
             val = val.replace(b'\r', b'')
             val = val.replace(b'\n', b'')
+            if val == b'':
+                continue
             moisture = ord(val)
             break
         time.sleep(1)
