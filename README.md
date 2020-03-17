@@ -4,9 +4,8 @@
 
 ## Issues:
 
-- Why is there 2 of the same file? (DW_1D_Moisture_Code.ino and Moisture Sensor Arduino.ino)
 - Create another table, storing the plant_id and pot_no to replace the dictionary in main.py, get_data()
-- Figure out a way to improve on the reliability of the sensors - [the RPi sends a trigger to Arduino to measure that specific plant](https://www.sunfounder.com/blog/rpi-ard/) && if the returned value is none, send the trigger again - (only raise error after 10 tries)
+- When calling readMoisture(), Arduino will sometimes print b'\n' instead of b'{moisture}\n' back to the RPi
 
 
 ## Good coding habits
