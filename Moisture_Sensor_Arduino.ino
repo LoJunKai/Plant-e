@@ -9,7 +9,11 @@ int sensors[6] = {A0, A1, A2, A3, A4, A5};
 
 void setup() { 
   Serial.begin(9600);
-} 
+  for (int i = 0; i < 6; i++)
+  {
+    pinMode(sensors[i], INPUT);
+  }
+}
 
 void loop() { 
   if (Serial.available())
