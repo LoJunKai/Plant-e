@@ -3,7 +3,7 @@ float sensorValue = 0;
 
 int dry = 500;
 int wet = 0; //prevly 30
-int moisture;
+int moisture = 0;
 
 int sensors[6] = {A0, A1, A2, A3, A4, A5};
 
@@ -29,7 +29,7 @@ void loop() {
     {
       moisture = 100;
     } 
-    else if (moisture < 0);
+    else if (moisture < 0)
     {
       moisture = 0;
     }
