@@ -11,7 +11,6 @@ import time
 """---------------PLEASE DELETE THOSE THAT WE ARE NOT USING!!----------------"""
 
 #Define some constants from the datasheet
-LDR        = (0x23, 0x5c) # LDR[0] = Default device I2C address, LDR[1] = set as per instructions below
 POWER_DOWN = 0x00 # No active state
 POWER_ON   = 0x01 # Power on
 RESET      = 0x07 # Reset data register value
@@ -120,20 +119,19 @@ def convertToNumber(data):
   result=(data[1] + (256 * data[0])) / 1.2
   return (result)
 
-def readLight(addr=LDR[1]):
+def readLight(addr=LDR[0]):
   """Reads light value for each plant"""
 
   #Read data from I2C interface
   data = bus.read_i2c_block_data(addr,ONE_TIME_HIGH_RES_MODE_1)
   return convertToNumber(data)
 
+LDR = (0x23, 0x5c) # LDR[0] = Default device I2C address, LDR[1] = set as per instructions below
 def getdata(plant):
     """ return {"light" : 123, "moisture" : 321} picture is in rpi camera code """
-
+    
     index = {100:0, 101:1, 102:2, 104:3, 110:4, 111:5}
-
     plant = index[plant]
-    print(plant)
     
     if plant == 0 or plant == 1 or plant == 2:
     	ldr = LDR[0]
