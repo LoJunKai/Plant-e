@@ -2,6 +2,9 @@
 
 ---
 
+## Rubrics
+![](https://github.com/LoJunKai/DW-Plant-e/blob/master/Rubrics.png)
+
 ## Issues:
 
 - Create another table, storing the plant_id and pot_no to replace the dictionary in main.py, get_data()
