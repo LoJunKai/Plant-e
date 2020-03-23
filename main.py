@@ -98,7 +98,7 @@ def convertToNumber(data):
   # into a decimal number. Optional parameter 'decimals'
   # will round to specified number of decimal places.
   result=(data[1] + (256 * data[0])) / 1.2
-  return (result)
+  return int(result)
 
 def readLight(addr=LDR[0]):
   """Reads light value for each plant"""
