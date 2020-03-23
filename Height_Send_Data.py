@@ -36,16 +36,16 @@ db = firebase.database()
 root = db.child("/").get(user['idToken'])
 
 
-#MEASURE HIGHEST POINT
-#change value of height for each day in cm
+# MEASURE HIGHEST POINT
+# Change value of height for each day in cm
 
-day = "day 0"   #change day number accordingly
+day = "day 0"   # CHANGE DAY NUMBER ACCORDINGLY
 
-db.child("Height").child("100").child(day).set(9.3, user['idToken'])
-db.child("Height").child("101").child(day).set(11.3, user['idToken'])
-db.child("Height").child("102").child(day).set(2.9, user['idToken'])
-db.child("Height").child("104").child(day).set(13.1, user['idToken'])
-db.child("Height").child("110").child(day).set(10.8, user['idToken'])
-db.child("Height").child("111").child(day).set(1.4, user['idToken'])
+db.child("Height").child("100").child(day).set(9.3, user['idToken'])   # Plant 1
+db.child("Height").child("101").child(day).set(11.3, user['idToken'])  # Plant 2
+db.child("Height").child("102").child(day).set(2.9, user['idToken'])   # Plant 3
+db.child("Height").child("104").child(day).set(13.1, user['idToken'])  # Plant 4
+db.child("Height").child("110").child(day).set(10.8, user['idToken'])  # Plant 5
+db.child("Height").child("111").child(day).set(1.4, user['idToken'])   # Plant 6
 
 #run the code and the database should be updated
