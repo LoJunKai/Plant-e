@@ -185,7 +185,9 @@ def cal_ave3(db, plant, current_date):
 
         date_3 = {}
         for i in range(len(date)):
-            date_3["day " + str(i)] = date_dict[date[i]]
+            date_3["day " + str(i)] = date_dict.get(date[i], [None])
+            # [None] --> skip the day when it has no data
+            # Eg. Day1, day2, day 4 (day3 no data) when called on day5, it will return average of day 4, day2
 
         return date_3
 
