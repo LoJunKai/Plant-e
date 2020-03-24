@@ -1,3 +1,33 @@
+# Thank you for the hardwork!
+
+# MEASURE HIGHEST POINT
+# Change value of height for each day in cm
+
+day = "day 100"   # CHANGE DAY NUMBER ACCORDINGLY
+
+#run the code and the database will be updated
+
+height = {
+    "100": 123123,  # Plant 1
+    "101": 123123,  # Plant 2
+    "102": 123123,  # Plant 3
+    "104": 123123,  # Plant 4
+    "110": 123123,  # Plant 5
+    "111": 123123   # Plant 6
+}
+
+
+# Main Code:
+def update(day, height):
+    for plant_id, plant_height in height.items():
+        db.child("Height").child(plant_id).child(day).set(plant_height, user['idToken'])
+
+
+
+
+# Set up
+
+
 #import RPi.GPIO as GPIO
 #from time import sleep
 import pyrebase
@@ -19,10 +49,10 @@ email = "plant-e@dw.com"
 password = "afordw"
 
 config = {
-	"apiKey": apikey,
-	"authDomain": authdomain,
-	"databaseURL": dburl,
-	"storageBucket": "plant-e.appspot.com"
+    "apiKey": apikey,
+    "authDomain": authdomain,
+    "databaseURL": dburl,
+    "storageBucket": "plant-e.appspot.com"
 }
 # Create a firebase object by specifying the URL of the database and its secret token.
 # The firebase object has functions put and get, that allows user to put data onto
@@ -36,16 +66,4 @@ db = firebase.database()
 root = db.child("/").get(user['idToken'])
 
 
-# MEASURE HIGHEST POINT
-# Change value of height for each day in cm
-
-day = "day 0"   # CHANGE DAY NUMBER ACCORDINGLY
-
-db.child("Height").child("100").child(day).set(9.3, user['idToken'])   # Plant 1
-db.child("Height").child("101").child(day).set(11.3, user['idToken'])  # Plant 2
-db.child("Height").child("102").child(day).set(2.9, user['idToken'])   # Plant 3
-db.child("Height").child("104").child(day).set(13.1, user['idToken'])  # Plant 4
-db.child("Height").child("110").child(day).set(10.8, user['idToken'])  # Plant 5
-db.child("Height").child("111").child(day).set(1.4, user['idToken'])   # Plant 6
-
-#run the code and the database should be updated
+update(day, height)
