@@ -13,14 +13,22 @@ kivy.require("1.11.1")
 # if __name__ == "__main__":
 #     EpicApp().run() 
 
-root = Builder.load_string('''
-VideoPlayer:
-    source: 'http://10.21.143.20:8081/stream.mjpg'
-''')
+# root = Builder.load_string('''
+# VideoPlayer:
+#     source: 'http://10.21.143.20:8081/stream.mjpg'
+# ''')
+
+# class TestApp(App):
+# 	def build(self):
+# 		return root
 
 class TestApp(App):
 	def build(self):
-		return root
+		video = Video(source='http://10.21.143.20:8081/stream.mjpg')
+		video.state= 'play'
+		video.options = {'eos': 'loop'}
+		video.allow_stretch=False
+		return video
 
 if __name__ == '__main__':
     TestApp().run()
