@@ -9,6 +9,7 @@ from picamera import PiCamera
 import time
 import database  # Download the file database.py
 
+# Change accordingly if SMBus error occurs
 #bus = smbus.SMBus(0) # Rev 1 Pi uses 0
 bus = smbus.SMBus(1)  # Rev 2 Pi uses 1
 
@@ -108,6 +109,7 @@ def readMoisture(plant):
 
     return moisture
 
+# Get I2C address using: sudo i2cdetect -y 1
 LDR = (0x23, 0x5c) # LDR[0] = Default device I2C address, LDR[1] = set as per instructions below
 def getdata(plant):
     """ return {"light" : 123, "moisture" : 321} picture is in rpi camera code """
