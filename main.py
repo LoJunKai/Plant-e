@@ -7,6 +7,12 @@ import smbus
 import base64
 from picamera import PiCamera
 import time
+import database
+
+#bus = smbus.SMBus(0) # Rev 1 Pi uses 0
+bus = smbus.SMBus(1)  # Rev 2 Pi uses 1
+
+user, db = database.setup()
 
 """---------------PLEASE DELETE THOSE THAT WE ARE NOT USING!!----------------"""
 
@@ -31,36 +37,10 @@ ONE_TIME_HIGH_RES_MODE_2 = 0x21
 # Device is automatically set to Power Down after measurement.
 ONE_TIME_LOW_RES_MODE = 0x23
 
-#bus = smbus.SMBus(0) # Rev 1 Pi uses 0
-bus = smbus.SMBus(1)  # Rev 2 Pi uses 1
-
-projectid = "plant-e"
-dburl = "https://" + projectid + ".firebaseio.com"
-authdomain = projectid + ".firebaseio.com"
-
-apikey = "AIzaSyDJxaq0uT1JpIkftOgjoldVIy7mT9KG844"
-email = "plant-e@dw.com"
-password = "afordw"
-
-config = {
-    "apiKey": apikey,
-    "authDomain": authdomain,
-    "databaseURL": dburl,
-    "storageBucket": "plant-e.appspot.com"
-}
-# Create a firebase object by specifying the URL of the database and its secret token.
-# The firebase object has functions put and get, that allows user to put data onto
-# the database and also retrieve data from the database.
-
-firebase = pyrebase.initialize_app(config)
-auth = firebase.auth()
-user = auth.sign_in_with_email_and_password(email, password)
-
-db = firebase.database()
-root = db.child("/").get(user['idToken'])
-
 
 """
+Crontab 101:
+
 crontab -e                                               #select editor
 0 * * * * python3 /home/pi/<insertfilename>              # min  hour  day_of_month  month  day_of_week  command
 replacing your command with      sudo reboot now         #this makes your rpi restart anytime the scheduled task runs
@@ -157,7 +137,7 @@ def getallplantls():
     return plantdic
 
 def takepic(day):
-    wiht PiCamera() as camera:
+    with PiCamera() as camera:
         camera.start_preview()
         camera.capture('/home/pi/Desktop/day{}.jpg'.format(day))
         camera.stop_preview()
