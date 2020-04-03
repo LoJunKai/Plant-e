@@ -1,3 +1,5 @@
+#:kivy 1.11.1
+
 WindowManager:
     MainWindow:
     StatWindow:
@@ -17,9 +19,7 @@ WindowManager:
 
 <MainWindow>:
     name: "main"
-
-    moisture: moisture_
-    light: light_
+    # moisture: plant_data
 
     canvas.before:
         Color:
@@ -27,6 +27,9 @@ WindowManager:
         Rectangle:
             size: self.size
             pos: self.pos
+
+    # PlantData:
+    #     id: plant_data
 
     GridLayout:
         cols: 1
@@ -37,24 +40,20 @@ WindowManager:
             cols: 3
 
             GridLayout:
-                cols: 2
+                cols: 1
 
                 Label:
-                    text: 'Moisture'
-
-                TextInput:
-                    id: moisture_
+                    text: 'Moisture: ' + str(root.data()[0])
                     multiline: False
+                    font_size: 35
 
             GridLayout:
-                cols: 2
+                cols: 1
 
                 Label:
-                    text: 'Light'
-
-                TextInput:
-                    id: light_
+                    text: 'Light: ' + str(root.data()[1])
                     multiline: False
+                    font_size: 35
 
             GridLayout:
                 cols: 1
@@ -99,8 +98,11 @@ WindowManager:
         GridLayout:
             cols: 1
 
-            Button:
+            SmoothButton:
                 text: 'Water Me!'
+                on_press:
+                    root.water()
+
 
 <StatWindow>:
     name: "stat"
@@ -110,5 +112,4 @@ WindowManager:
         on_release:
             app.root.current = "main"
             root.manager.transition.direction = "right"
-
 
