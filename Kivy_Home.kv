@@ -1,0 +1,114 @@
+WindowManager:
+    MainWindow:
+    StatWindow:
+
+<SmoothButton@Button>:
+    background_color: (0, 0, 0, 0)
+    background_normal: ''
+    back_color: (0, 0.7, 0.3, 1)
+    border_radius: [50]
+    canvas.before:
+        Color:
+            rgba: self.back_color
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: self.border_radius
+
+<MainWindow>:
+    name: "main"
+
+    moisture: moisture_
+    light: light_
+
+    canvas.before:
+        Color:
+            rgba: (0, 0.2, 0.5, 1)
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    GridLayout:
+        cols: 1
+        size: root.width, root.height
+        pos: 0,0
+
+        GridLayout:
+            cols: 3
+
+            GridLayout:
+                cols: 2
+
+                Label:
+                    text: 'Moisture'
+
+                TextInput:
+                    id: moisture_
+                    multiline: False
+
+            GridLayout:
+                cols: 2
+
+                Label:
+                    text: 'Light'
+
+                TextInput:
+                    id: light_
+                    multiline: False
+
+            GridLayout:
+                cols: 1
+                SmoothButton:
+                    text: 'Stats'
+                    on_release:
+                        app.root.current = "stat"
+                        root.manager.transition.direction = "left"
+
+        BoxLayout:
+            size_hint_y: 3
+
+            Label:
+                text: 'Live Feed'
+
+        ProgBar:
+            cols: 1
+            orientation: 'vertical'
+            canvas:
+                Color:
+                    rgb: .45, .28, .5
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Label:
+                text: 'Maturity'
+                color: .5, 0, .5, 1
+                markup: True
+
+            ProgressBar:
+                value: .25
+                min: 0
+                max: 1
+                pos_hint: {'x':.1}
+                size_hint_x: .8
+
+
+            Label:
+                text: 'Progress Bar'
+
+        GridLayout:
+            cols: 1
+
+            Button:
+                text: 'Water Me!'
+
+<StatWindow>:
+    name: "stat"
+
+    Button:
+        text: "Go Back!"
+        on_release:
+            app.root.current = "main"
+            root.manager.transition.direction = "right"
+
+
