@@ -20,7 +20,7 @@ def setup(projectid):
 	    "apiKey": apikey,
 	    "authDomain": authdomain,
 	    "databaseURL": dburl,
-	    # "storageBucket": "plant-e.appspot.com"
+	    "storageBucket": "plant-e.appspot.com"
 	}
 	# Create a firebase object by specifying the URL of the database and its secret token.
 	# The firebase object has functions put and get, that allows user to put data onto
