@@ -1,0 +1,12 @@
+# This is an implicit value, here for clarity
+--index-url https://pypi.python.org/simple/
+
+pyrebase4==4.3.0
+serial==0.0.97
+smbus==1.1
+picamera==1.13
+
+-e git+git://github.com/LoJunKai/DW-Plant-e.git@master#egg=ave3.py
+-e git+git://github.com/LoJunKai/DW-Plant-e.git@master#egg=database.py
+-e git+git://github.com/LoJunKai/DW-Plant-e.git@master#egg=Raspi_Setup.sh
+-e git+git://github.com/LoJunKai/DW-Plant-e.git@master#egg=main.py
