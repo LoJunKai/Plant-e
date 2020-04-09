@@ -2,6 +2,46 @@
 
 ---
 
+Directory:
+
+To run the `main.py` on the Raspberry Pi, you need to have the following dependencies:
+
+- pyrebase4
+- serial
+- smbus
+- pybase64
+- picamera
+
+If any of the above libraries are missing, please install it by `pip install [library]`
+
+You will also need the following files to be in the same directory as `main.py`
+
+- ave3.py
+- database.py
+
+Moisture_Sensor_Arduino.ino
+Raspi_Setup.sh
+
+---
+
+alternative
+
+Directory:
+
+To run the `main.py` on the Raspberry Pi, you need to have the following dependencies:
+
+Download requirements.txt onto the RPi, and run the following command:
+```
+pip install -r requirements.txt
+```
+
+Afterwards, run the `Raspi_Setup.sh` file
+
+Moisture_Sensor_Arduino.ino
+Raspi_Setup.sh
+
+---
+
 ## Rubrics
 ![](https://github.com/LoJunKai/DW-Plant-e/blob/master/Rubrics.png)
 
