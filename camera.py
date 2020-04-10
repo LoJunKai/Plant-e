@@ -1,6 +1,6 @@
 from picamera import PiCamera
 
-def takepic(day):
+def take_pic(day):
     with PiCamera() as camera:
         camera.start_preview()
         camera.capture('/home/pi/Desktop/day{}.jpg'.format(day))
