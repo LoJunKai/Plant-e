@@ -8,9 +8,17 @@ To run the `main.py` on the Raspberry Pi, you need to have the dependencies need
 pip install -r requirements.txt
 ```
 
-Afterwards, download and run the `Raspi_Setup.sh` file to configure RPi correctly.
+Afterwards, download the `Raspi_Setup.sh` file and run the following command to configure the RPi correctly.
 
-Next, complie and upload the `Moisture_Sensor_Arduino.ino` code onto the arduino
+```
+sudo bash Raspi_Setup.sh
+```
+
+Next, complie and upload the `Moisture_Sensor_Arduino.ino` code onto the arduino.
+
+Lastly, ensure that all the wires are connected correctly.
+
+You are good to go now!
 
 ---
 
