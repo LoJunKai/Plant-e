@@ -11,7 +11,6 @@ crontab -l   <-- not sure if 1 or l                      #to view file without e
 
 from database import *
 from sensors import *
-from ave3 import cal_ave3
 from camera import takepic
 import smbus
 
