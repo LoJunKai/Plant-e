@@ -16,12 +16,19 @@ ONE_TIME_HIGH_RES_MODE_2 = 0x21
 # Device is automatically set to Power Down after measurement.
 ONE_TIME_LOW_RES_MODE = 0x23
 
+def convert_to_number(data):
+  # Simple function to convert 2 bytes of data
+  # into a decimal number. Optional parameter 'decimals'
+  # will round to specified number of decimal places.
+  result=(data[1] + (256 * data[0])) / 1.2
+  return int(result)
+
 def read_light(bus, addr):
   """Reads light value for each plant"""
 
   #Read data from I2C interface
   data = bus.read_i2c_block_data(addr, ONE_TIME_HIGH_RES_MODE_1)
-  return convertToNumber(data)
+  return convert_to_number(data)
 
 def read_moisture_arduino(plant):
     """ returns moisture level for each plant """
