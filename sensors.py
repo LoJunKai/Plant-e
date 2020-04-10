@@ -23,7 +23,7 @@ def read_light(bus, addr):
   data = bus.read_i2c_block_data(addr, ONE_TIME_HIGH_RES_MODE_1)
   return convertToNumber(data)
 
-def read_moisture(plant):
+def read_moisture_arduino(plant):
     """ returns moisture level for each plant """
     moisture = None
     ser = serial.Serial("/dev/ttyACM0", 9600)  # change ACM number as found from ls /dev/tty/ACM*
