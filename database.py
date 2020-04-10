@@ -1,8 +1,7 @@
 """
-Just import this file and call it
+Call it using:
 
-import database
-user, db = database.setup('<project name>') --> "plant-e" or "veggie-e"
+user, db = db_setup('<project name>') --> "plant-e" or "veggie-e"
 """
 
 import pyrebase
@@ -32,13 +31,13 @@ def db_setup(projectid):
 
 	return user, firebase.database()
 
-def send_data(db, data, plant, day, hourcount):
+def send_data(db, user, data, plant, day, hourcount):
     """ sends received data to database """
 
     db.child("Plant-e").child(plant).child("day " + str(day)).child(hourcount).child("light").set(data["light"], user['idToken'])           # stores light value in database
     db.child("Plant-e").child(plant).child("day " + str(day)).child(hourcount).child("moisture").set(data["moisture"], user['idToken'])     # store moisture value in database
 
-def get_all_plant_ls(db):
+def get_all_plant_ls(db, user):
     """ returns ordered dictionary of keys and values under Names """
 
     plantdic = db.child("Names").get(user['idToken']).val()
