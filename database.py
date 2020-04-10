@@ -4,7 +4,6 @@
 import pyrebase
 import datetime
 import time
-import json
 
 #######################################################################
 # Timing functions
