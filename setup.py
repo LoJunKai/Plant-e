@@ -21,3 +21,5 @@ setup(
     ],
     python_requires='>=3.6',
 )
+
+# Source: https://github.com/navdeep-G/setup.py/blob/master/setup.py
