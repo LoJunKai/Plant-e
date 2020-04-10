@@ -25,14 +25,14 @@ def get_day(db, user, plant):
     #init_time_str = plantdata["init time"]
     init_time_str = db.child("Init Time").child(plant).child("init time").get(user['idToken']).val()      # get string in database under plant's "Init Time"
     init_time = datetime.datetime.strptime(init_time_str + ' UTC+0800','%d-%m-%Y %X %Z%z')          # convert string to datetime object
-    nowday = gettime() - init_time
+    nowday = get_time() - init_time
     return nowday.days
 
 
 def get_hour(db, user, plant):
     """ returns hour count for each plant """
 
-    nowtime = gettime().strftime('%d-%m-%Y %X')
+    nowtime = get_time().strftime('%d-%m-%Y %X')
     currenthour = int(nowtime[11:13])
     db.child("Init Time").child(plant).child("hour").set(currenthour, user['idToken'])
     hour = db.child("Init Time").child(plant).child("hour").get(user['idToken']).val()
