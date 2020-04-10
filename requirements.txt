@@ -13,3 +13,6 @@ picamera==1.13
 
 # This looks at the github account, setup.py file and downloads the modules from there
 -e git+git://github.com/LoJunKai/DW-Plant-e.git@master#egg=plante  # egg=<package_name> (same as the name in setup.py)
+
+
+# Source: https://caremad.io/posts/2013/07/setup-vs-requirement/
