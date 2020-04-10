@@ -1,10 +1,9 @@
-"""
-Call it using:
-
-user, db = db_setup('<project name>') --> "plant-e" or "veggie-e"
-"""
+# Setup database using:
+# user, db = db_setup('<project name>') --> "plant-e" or "veggie-e"
 
 import pyrebase
+import datetime
+import time
 
 #######################################################################
 # Timing functions
