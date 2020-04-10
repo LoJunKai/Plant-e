@@ -13,7 +13,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/LoJunKai/DW-Plant-e.git",
     # packages=setuptools.find_packages(),
-    py_modules = ["ave3", "database"],
+    py_modules = ["ave3", "database", "camera"],
     classifiers=[
         "Programming Language :: Python :: 3",
         # "License :: OSI Approved :: MIT License",
