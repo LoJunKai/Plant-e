@@ -41,5 +41,4 @@ def get_all_plant_ls(db, user):
     """ returns ordered dictionary of keys and values under Names """
 
     plantdic = db.child("Names").get(user['idToken']).val()
-    print(plantdic)
     return plantdic
