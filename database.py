@@ -7,7 +7,7 @@ user, db = database.setup('<project name>') --> "plant-e" or "veggie-e"
 
 import pyrebase
 
-def setup(projectid):
+def db_setup(projectid):
 	# projectid = "plant-e" or "veggie-e"
 	dburl = "https://" + projectid + ".firebaseio.com"
 	authdomain = projectid + ".firebaseio.com"
@@ -31,3 +31,16 @@ def setup(projectid):
 	user = auth.sign_in_with_email_and_password(email, password)
 
 	return user, firebase.database()
+
+def send_data(db, data, plant, day, hourcount):
+    """ sends received data to database """
+
+    db.child("Plant-e").child(plant).child("day " + str(day)).child(hourcount).child("light").set(data["light"], user['idToken'])           # stores light value in database
+    db.child("Plant-e").child(plant).child("day " + str(day)).child(hourcount).child("moisture").set(data["moisture"], user['idToken'])     # store moisture value in database
+
+def get_all_plant_ls(db):
+    """ returns ordered dictionary of keys and values under Names """
+
+    plantdic = db.child("Names").get(user['idToken']).val()
+    print(plantdic)
+    return plantdic
