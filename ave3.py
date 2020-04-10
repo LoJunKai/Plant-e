@@ -7,7 +7,7 @@ tz = datetime.timezone(datetime.timedelta(hours=8)) # can add name='SGT' to chan
 
 
 # Call this function at the start of every new day to input the 3 days ave for that day
-def cal_ave3(db, plant, current_date):
+def cal_ave3(db, user, plant, current_date):
 	# current_date is the date to be populated (just reach day 4, current_date == 'day 4')
 	if int(current_date[-1]) < 3:
 		print("current_date not above 3")
