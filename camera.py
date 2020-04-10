@@ -1,3 +1,4 @@
+import base64
 from picamera import PiCamera
 
 def take_pic(db, user, day):
