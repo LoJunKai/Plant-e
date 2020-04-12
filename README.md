@@ -22,9 +22,6 @@ You are good to go now!
 
 ---
 
-## Rubrics
-![](https://github.com/LoJunKai/DW-Plant-e/blob/master/Rubrics.png)
-
 ## Issues:
 
 - Shift all camera functions into the camera.py file
