@@ -1,254 +1,74 @@
-# DW-Plant-e
 
----
+# Webcam with ESP32-CAM and MicroPython
 
-To run the `main.py` on the Raspberry Pi, you need to have the dependencies needed. Install them by downloading the `requirements.txt` onto the RPi, and run the following command:
+![Imgur](https://i.imgur.com/8v4lsjd.jpg)
 
-```
-pip install -r requirements.txt
-```
+See http://micropython.org/ for more information on MicroPython.
 
-Afterwards, download the `Raspi_Setup.sh` file and run the following command to configure the RPi correctly.
+See https://github.com/tsaarni/micropython-with-esp32-cam/wiki for
+instructions on how to build custom version of MicroPython for ESP32 with
+OV2640 camera support.
 
-```
-sudo bash Raspi_Setup.sh
-```
-
-Next, complie and upload the `Moisture_Sensor_Arduino.ino` code onto the arduino.
-
-Lastly, ensure that all the wires are connected correctly.
-
-You are good to go now!
-
----
-
-## Issues:
-
-- Shift all camera functions into the camera.py file
-- Create main_raspi.py and house the final code in it
-- Change main.py to cron_arduino.py
-- Create another table, storing the plant_id and pot_no to replace the dictionary in main.py, get_data()
-- When calling readMoisture(), Arduino will sometimes print b'\n' instead of b'{moisture}\n' back to the RPi - Could be because the Serial does not get the value from Arduino in time, so the '\n' is received
-- When opening Serial in readMoisture(), place it inside a context manager (with... ) so that the connection closes properly
+MicroPython logo is by MicroPython project https://github.com/micropython/micropython/tree/master/logo.
 
 
-## Good coding habits
-(info is mostly correct, tell me if it is inaccurate!)
+## Installation
 
----
+Install tools on development machine
 
-## Naming convention
+    virtualenv -p python3 venv
+    . venv/bin/activate
+    pip install esptool adafruit-ampy pyserial
 
-main.py - contains the main code
 
-Upload all your other code into this repo. Filename should represent the functions in that file (eg. firebase functions would be in a file named firebase.py)
+Install webcam
 
-main.py would then import all the functions as from firebase import *
+    export AMPY_PORT=/dev/ttyUSB0
+    ampy put boot.py
+    ampy put webcam.py
 
-Stuff that you don't want it to be run when you import the module (testing code etc.), please place it into this
-``` python
-if __name__ == '__main__':
-    # Code here won't be run when you import the file.
-```
 
-All the variables used in the function should be initialised in the function or passed as parameters
+Connect UART to esp32 and start terminal console
 
-Bad examples:
-``` python
-# Eg. 1
-# plant is a variable that is used in other functions too
-# This confuses the reader on what variables does the function uses
-plant = 0 
+    miniterm.py /dev/ttyUSB0 115200 --dtr 0   # normal mode
 
-def get_moisture_level():
-    # Get the moisture sensor data for the plant
-    return moisture(plant)  # Plant is used in the function
 
-# Eg. 2
+Install dependencies on esp32 by running following on console
 
-# a is instantiated outside of function
-# But a is used only inside the function and nowhere else
-a = 0
-
-def get_list_of_a():
-    b = []
-    while a<10:
-        b.append(a)
-        a += 1
-    return b
-    
-...
-# a is not referenced anymore and is only used in the function
-```  
-
-Preferred way:
-``` python
-# Eg. 1
-plant = 0
-
-# Any variables used in the function is passed into the function as parameters, and not just used sliently
-def get_moisture_level(plant): 
-    # Get the moisture sensor data for the plant
-    return moisture(plant)  # Plant is used in the function
-   
-Eg. 2
-# Since a is not used anywhere else, it shall be instantiated inside the function
-def get_list_of_a():
-    a = 0
-    b = []
-    while a<10:
-        b.append(a)
-        a += 1
-    return b
-    
-Eg. 3
-def populate_list(a, b)
-    for i in range(b):
-        a.append(i)
-    
-    return a
-
-a = [9,4,2,5]
-populated_list = populate_list(a, 3)
-print(populated_list)  # [9,4,2,5, 0, 1, 2]
-```
-
-Function names should be representative of what the function does
-``` python
-# It is good to add get in front if you are retrieving data
-# Set when you setting data
-def get_moisture_level(plant):
-    # Get the moisture sensor data
-    
-# Rather than:
-def moisture(plant):
-    # Get the moisture sensor data
-    
-# Or not even representative of what it does:
-def water_plant():
-    # Get the moisture sensor data
-```
-
-Use snake_case instead of camelCase to differentiate works in naming variables and functions
-``` python
-def hello_world():
-    pass
-
-list_of_words = hello_world()
-
-# Not recommended:
-def helloWorld():
-    pass
-
-listOfWords = helloWorld()
-```
+    import upip
+    upip.install('picoweb')  # tested with 1.5.2
+    upip.install('micropython-ulogging')
+    upip.install('ujson')
 
 
 
-## Whitespaces
 
-Do leave spaces before and after = and ==
-``` python
-a = b
+# Known problems
 
-while a == b:
-    a += b
-```
+## uasyncio throws exception
 
-Math calculations and operations, leave a space only when needed to divide the expression
-``` python
-a = 12*34**2 / 45*343
-```
+Following exception is thrown by uasyncio
 
-Always add spaces after commas to seperate elements
-``` python
-a = [1, 2, 3]
-range(1, 4, 3)
-dd = {"hello": 123, "world": 435}  # Spaces after the colon and comma
-def hello(a, b, c):
-
-# Don't need spaces for this tho
-a = (1,)
-a[0]  # Before [] for slicing
-func()  # Before () for functions
-```
-
-Leave a line before and after a code block.
-Outer most functions are separated with 2 line breaks.
-Use 4 spaces for indentation rather than tabs
-``` python
-def foo():
-    a = 0
-    b = 0
-    c = 0
-    
-    if a == b:  # Leave a line before the code block
-        print(a)
-        print(b)  # Leave a line after the code block
-        
-    a = b+c
-    b = a+c
-    return a,b  # Code on the same indentation level do need to leave a line, unles you want to separate the code (transiting to a different purpose, etc.)
-    
-
-def bar():  # 2 line spaces to separate functions with on indentation level 0
-    # Next function
-
-```
+    Running on http://0.0.0.0:80/
+    INFO:picoweb:642.000 <HTTPRequest object at 3f819b90> <StreamWriter <socket>> "GET /"
+    Traceback (most recent call last):\r\n  File "<stdin>", line 25, in <module>
+    File "/lib/picoweb/__init__.py", line 298, in run
+    File "/lib/uasyncio/core.py", line 161, in run_forever
+    File "/lib/uasyncio/core.py", line 136, in run_forever
+    File "/lib/uasyncio/__init__.py", line 60, in remove_writer
+    TypeError: function takes 2 positional arguments but 3 were given
 
 
+workaround is to modify lib/uasyncio/__init__.py on the target
 
-# Documentation
+    --- lib/uasyncio/__init__.py.orig       2019-02-17 19:13:41.207015002 +0200
+    +++ lib/uasyncio/__init__.py    2019-02-17 19:12:33.895297196 +0200
+    @@ -57,7 +57,7 @@
+             # and if that succeeds, yield IOWrite may never be called
+             # for that socket, and it will never be added to poller. So,
+             # ignore such error.
+    -        self.poller.unregister(sock, False)
+    +        self.poller.unregister(sock)
 
-There should be a spacing after every hashtag
-First letter should be captialised
-For inline comments, add 2 spaces before the hastag
-Use inline comments sparingly
-``` python
-# This is the proper way
-
-# don't do this unless the first word is a variable or something (that has to be in small letters)
-#try not to do this too
-
-a = 0  # 2 spaces before inline hastags
-```
-__Every__ function should be documented
-``` python
-def foo():
-    # Place documentation here
-
-def bar():
-    """
-    If the docstring extends to couple of lines or a paragraph,
-        use multiline quotes (""")
-        
-    It looks better then # before every line.
-    """
-```
-
-
-
-# Miscellaneous
-
-Use `"` for strings, `'` for single character strings, """ for multiline strings
-
-Return statements should always return something
-``` python
-def foo(a):
-    if a == True:
-        return True
-    else:
-        return  # Not consistent
-
-# If the logic ends with a return, don't need to do the else statement 
-# (since it won't be run if logic is True)
-
-def foo(a):
-    if a == True:
-        return True
-    return False  # Don't need to add the else statement if 
-```
-
-
-
-### [Refer to this for more info on conventions](https://www.python.org/dev/peps/pep-0008/)
+         def wait(self, delay):
+             if DEBUG and __debug__:
