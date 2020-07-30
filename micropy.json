@@ -6,7 +6,9 @@
     "dev-packages": {
         "micropy-cli": "*"
     },
-    "packages": {},
+    "packages": {
+        "picoweb": "*"
+    },
     "config": {
         "vscode": true,
         "pylint": true
