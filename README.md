@@ -2,11 +2,13 @@
 
 ## Installation
 
-It is recccomended to use VSCode as an IDE, along with [micropy-cli](https://github.com/BradenM/micropy-cli) as it provides:
+It is recommended to use VSCode as an IDE, along with [micropy-cli](https://github.com/BradenM/micropy-cli) as it provides:
 
 * Linting
 * Dependency management
 * Version Control System (VCS) compatibility
+
+To set up the project on a local machine for development:
 
 ```
 # Clone project
