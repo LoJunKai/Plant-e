@@ -1,74 +1,42 @@
-
-# Webcam with ESP32-CAM and MicroPython
-
-![Imgur](https://i.imgur.com/8v4lsjd.jpg)
-
-See http://micropython.org/ for more information on MicroPython.
-
-See https://github.com/tsaarni/micropython-with-esp32-cam/wiki for
-instructions on how to build custom version of MicroPython for ESP32 with
-OV2640 camera support.
-
-MicroPython logo is by MicroPython project https://github.com/micropython/micropython/tree/master/logo.
-
+# Plant-e
 
 ## Installation
 
-Install tools on development machine
+It is recommended to use VSCode as an IDE, along with [micropy-cli](https://github.com/BradenM/micropy-cli) as it provides:
 
-    virtualenv -p python3 venv
-    . venv/bin/activate
-    pip install esptool adafruit-ampy pyserial
+* Linting
+* Dependency management
+* Version Control System (VCS) compatibility
 
+To set up the project on a local machine for development:
 
-Install webcam
+```
+# Clone project
+git clone https://github.com/LoJunKai/Plant-e.git
+cd Plant-e
 
-    export AMPY_PORT=/dev/ttyUSB0
-    ampy put boot.py
-    ampy put webcam.py
+# Create virtual environment
+python3 -m venv env
+source env/bin/activate
 
+# Install packages
+python3 -m pip install micropy-cli pylint
 
-Connect UART to esp32 and start terminal console
+# Set up Micropy environment locally
+micropy
+```
 
-    miniterm.py /dev/ttyUSB0 115200 --dtr 0   # normal mode
+## Flashing Firmware
 
+This project uses [custom MicroPython firmware](https://github.com/melvinkokxw/micropython) with camera and BLE support. The firmware was compiled using esp-idf 4.x (hash 4c81978a3e2220674a432a588292a4c860eef27b).
 
-Install dependencies on esp32 by running following on console
+The firmware is included in the `firmware` folder. To flash it to the board:
 
-    import upip
-    upip.install('picoweb')  # tested with 1.5.2
-    upip.install('micropython-ulogging')
-    upip.install('ujson')
+```
+# Install esptool
+python3 -m pip install esptool
 
-
-
-
-# Known problems
-
-## uasyncio throws exception
-
-Following exception is thrown by uasyncio
-
-    Running on http://0.0.0.0:80/
-    INFO:picoweb:642.000 <HTTPRequest object at 3f819b90> <StreamWriter <socket>> "GET /"
-    Traceback (most recent call last):\r\n  File "<stdin>", line 25, in <module>
-    File "/lib/picoweb/__init__.py", line 298, in run
-    File "/lib/uasyncio/core.py", line 161, in run_forever
-    File "/lib/uasyncio/core.py", line 136, in run_forever
-    File "/lib/uasyncio/__init__.py", line 60, in remove_writer
-    TypeError: function takes 2 positional arguments but 3 were given
-
-
-workaround is to modify lib/uasyncio/__init__.py on the target
-
-    --- lib/uasyncio/__init__.py.orig       2019-02-17 19:13:41.207015002 +0200
-    +++ lib/uasyncio/__init__.py    2019-02-17 19:12:33.895297196 +0200
-    @@ -57,7 +57,7 @@
-             # and if that succeeds, yield IOWrite may never be called
-             # for that socket, and it will never be added to poller. So,
-             # ignore such error.
-    -        self.poller.unregister(sock, False)
-    +        self.poller.unregister(sock)
-
-         def wait(self, delay):
-             if DEBUG and __debug__:
+# Flash the firmware
+esptool.py --chip esp32 --port /dev/ttyUSB0 erase_flash
+esptool.py --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash -z 0x1000 micropython_8da40ba_esp32_idf4.x_ble_camera.bin
+```
