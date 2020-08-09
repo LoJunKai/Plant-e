@@ -40,3 +40,12 @@ python3 -m pip install esptool
 esptool.py --chip esp32 --port /dev/ttyUSB0 erase_flash
 esptool.py --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash -z 0x1000 micropython_8da40ba_esp32_idf4.x_ble_camera.bin
 ```
+
+## Reference Materials
+
+- [ESP32 MicroPython Firmware Download](https://micropython.org/download/esp32/)
+- [Flashing with esptool](https://randomnerdtutorials.com/flashing-micropython-firmware-esptool-py-esp32-esp8266/)
+- [Using uPyCraft](https://randomnerdtutorials.com/getting-started-micropython-esp32-esp8266/)
+
+How to connect FTDI to ESP32:
+![Image taken from https://randomnerdtutorials.com/esp32-cam-video-streaming-face-recognition-arduino-ide/](https://github.com/LoJunKai/Plant-e/blob/master/FTDI%20to%20ESP32%20Connection.png)
