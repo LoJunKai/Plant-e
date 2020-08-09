@@ -105,3 +105,6 @@ venv.bak/
 
 # Micropy
 .micropy/
+
+# Project config
+config.py
