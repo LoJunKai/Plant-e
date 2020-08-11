@@ -53,3 +53,12 @@ wifi_config = {
     "password":"<wifi password>"
 }
 ```
+
+## Reference Materials
+
+- [ESP32 MicroPython Firmware Download](https://micropython.org/download/esp32/)
+- [Flashing with esptool](https://randomnerdtutorials.com/flashing-micropython-firmware-esptool-py-esp32-esp8266/)
+- [Using uPyCraft](https://randomnerdtutorials.com/getting-started-micropython-esp32-esp8266/)
+
+How to connect FTDI to ESP32:
+![Image taken from https://randomnerdtutorials.com/esp32-cam-video-streaming-face-recognition-arduino-ide/](https://github.com/LoJunKai/Plant-e/blob/master/FTDI%20to%20ESP32%20Connection.png)
