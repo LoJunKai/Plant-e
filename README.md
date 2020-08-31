@@ -10,7 +10,7 @@ It is recommended to use VSCode as an IDE, along with [micropy-cli](https://gith
 
 To set up the project on a local machine for development:
 
-```
+```bash
 # Clone project
 git clone https://github.com/LoJunKai/Plant-e.git
 cd Plant-e
@@ -32,13 +32,26 @@ This project uses [custom MicroPython firmware](https://github.com/melvinkokxw/m
 
 The firmware is included in the `firmware` folder. To flash it to the board:
 
-```
+```bash
 # Install esptool
 python3 -m pip install esptool
 
-# Flash the firmware
+# Only needed if flashing for the first time
 esptool.py --chip esp32 --port /dev/ttyUSB0 erase_flash
-esptool.py --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash -z 0x1000 micropython_8da40ba_esp32_idf4.x_ble_camera.bin
+
+# Flash the firmware
+esptool.py --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash -z 0x1000 micropython_3a9d948_esp32_idf4.x_ble_camera.bin
+```
+
+## Usage
+
+Create `config.py` in the root directory with the following content:
+
+```python
+wifi_config = {
+    "ssid":"<wifi ssid>",
+    "password":"<wifi password>"
+}
 ```
 
 ## Reference Materials
