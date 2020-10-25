@@ -54,6 +54,14 @@ wifi_config = {
 }
 ```
 
+1. Run upycraft
+2. Plug in FTDI and press connect - flash if necessary
+3. Take out the connection between GND and IO0 and press the reset button - unplug and plug in the FTDI if necessary
+4. Press connect on upycraft
+5. DownloadAndRun all the files to load it into ESP32
+6. To over-write files, press Stop > DownloadAndRun > reset button on esp32
+
+
 ## Reference Materials
 
 - [ESP32 MicroPython Firmware Download](https://micropython.org/download/esp32/)
