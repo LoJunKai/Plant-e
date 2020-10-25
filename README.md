@@ -61,6 +61,10 @@ wifi_config = {
 5. DownloadAndRun all the files to load it into ESP32
 6. To over-write files, press Stop > DownloadAndRun > reset button on esp32
 
+If module not found error comes up, put in:
+
+    import upip
+    upip.install("<module here>")
 
 ## Reference Materials
 
