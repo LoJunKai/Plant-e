@@ -66,6 +66,11 @@ If module not found error comes up, put in:
     import upip
     upip.install("<module here>")
 
+## Temporary fix (without ngrok)
+
+- Esp32 would send images over to DB every hr (except at night)
+- Server would serve a collage of 2 photos
+
 ## Reference Materials
 
 - [ESP32 MicroPython Firmware Download](https://micropython.org/download/esp32/)
