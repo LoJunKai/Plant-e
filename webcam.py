@@ -11,9 +11,11 @@ app = picoweb.WebApp('app')
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('app')
 
+# Change web server to function call instead (if incoming requests can be received, run picoweb instead)
+# @app.route('/')
+# def index(req, resp):
 
-@app.route('/')
-def index(req, resp):
+def send_pic(ip_addr):
 
     # parse query string
     req.parse_qs()
