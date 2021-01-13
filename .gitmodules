@@ -1,0 +1,6 @@
+[submodule "Plant-e-server"]
+	path = Plant-e-server
+	url = https://github.com/LoJunKai/Plant-e-server.git
+[submodule "DW_1D"]
+	path = DW_1D
+	url = https://github.com/LoJunKai/DW_1D.git
