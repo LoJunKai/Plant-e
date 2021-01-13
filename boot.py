@@ -6,7 +6,7 @@ import urequests
 import config
 import webcam
 
-
+# Connect to WiFi according to config file
 def do_connect():
     sta_if = network.WLAN(network.STA_IF)
     start = utime.time()
@@ -34,4 +34,6 @@ def do_connect():
 
 do_connect()
 
-webcam.run()
+# Send a pic instead of running webcam
+# webcam.run()
+send_pic(ip_addr)
